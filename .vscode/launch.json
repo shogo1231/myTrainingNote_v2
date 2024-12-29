@@ -1,0 +1,37 @@
+{
+  // IntelliSense を使用して利用可能な属性を学べます。
+  // 既存の属性の説明をホバーして表示します。
+  // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "1.0.0",
+  "configurations": [
+    {
+      "command": "npm run dev",
+      "name": "app",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/app",
+      "type": "node-terminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "server",
+      "program": "${workspaceFolder}/server/build/js/server/index.js", // デバッガ起動時に実行する実行ファイル名 メインの JavaScript ファイル
+      "preLaunchTask": "Compile TypeScript",
+      "cwd": "${workspaceFolder}/server",
+      "outFiles": ["${workspaceFolder}/server/build/js/**/*.js"], // 出力ファイルのパス
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal", // ターミナルを統合ターミナルに設定
+      "sourceMaps": true, // ソースマップを有効にする
+      "restart": true, // ホットリロードみたいなもの（ビルドして使ってるのでおそらく意味ない）
+      "timeout": 1000 // 1000ミリ秒（1秒）のタイムアウトを指定
+    }
+  ],
+  "compounds": [
+    {
+      "name": "app&server",
+      "configurations": ["app", "server"],
+      "stopAll": true
+    },
+  ]
+}

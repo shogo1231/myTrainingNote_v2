@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compile TypeScript",
+      "type": "typescript",
+      "tsconfig": "server/tsconfig.json",  // tsconfig への絶対パスを指定
+      "problemMatcher": ["$tsc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always", // ターミナルを表示
+        "focus": true,      // ターミナルにフォーカスを当てる
+        "panel": "shared",  // ターミナルを共有
+        "showReuseMessage": false, // メッセージを非表示にする
+        "clear": false      // ターミナルをクリアしない
+      }
+    }
+  ]
+}

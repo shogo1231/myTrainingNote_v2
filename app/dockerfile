@@ -1,0 +1,31 @@
+# nodeのバージョン指定
+FROM node:20
+
+# 作業ディレクトリの設定
+WORKDIR /app
+
+# 依存関係ファイルをコピー
+COPY package.json package-lock.json ./
+
+# 依存関係のインストール
+RUN npm install
+
+# アプリケーションのファイルをコピー
+COPY . .
+
+EXPOSE 5173
+
+# アプリケーションの起動
+CMD ["npm", "run", "dev"]
+
+
+
+# 起動確認し、OKならnginxとmongoを移行してくる
+# docker-composeを起動し問題ないか確認する
+
+# src内をexpressのＭＶＣ機能でトップページが表示されるように置き換える
+# 適当なルーティング処理を作成する（mongoからデータ取得する）
+# SPAで遷移したサイトに対して適当なルーティング処理を作成する（mongoからデータ取得する）
+# MySQL8.0のコンテナ作成し、起動確認
+# SPA含め動作することを確認 OK
+# myTrainingNoteサイトのコードを移植する
