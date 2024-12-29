@@ -1,0 +1,19 @@
+# 環境構築手順の備忘録
+npm create vite@latest
+言語はTypeScript　フレームワークはReactを選択する
+
+npm run devで実行する
+
+## Emotionのインストール(react版)
+cd app
+npm install @emotion/react
+参考記事
+https://zenn.dev/kiriyama/articles/630b2547a6ac79
+
+# Highcharts-ganttのインストール
+app/src/vendor直下に配置
+
+# bulletproof-reactを参考にフォルダ構成を大幅に見直し
+https://github.com/alan2207/bulletproof-react/tree/master/apps/react-vite
+今回作成するアプリに必要なさそうなコードは可能な限り削除
+
