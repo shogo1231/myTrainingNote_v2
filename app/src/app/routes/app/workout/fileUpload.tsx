@@ -217,18 +217,11 @@ const CsvUploader = () => {
                     </div>
                   ))
                 ) : (
-                  transRowData.map((transRowItem, index) => {
-                    // const transformedRows = transRowItem.map((item) => ({
-                    //   value1: item.field1,
-                    //   value2: item.field2,
-                    //   value3: "", // 必要に応じて設定
-                    //   value4: false, // 必要に応じて設定
-                    // }));
-
+                  transRowData.map((transRowItem, index) => (
                     <div key={index}>
                       {drawTranspositionTable(transRowItem, transColData[index])}
                     </div>
-                  })
+                  ))
                 )}
                 <div>JSONデータ表示</div>
                 <textarea
