@@ -1,17 +1,32 @@
-// import '../Top.css';
 // import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Papa from "papaparse";
+import { drawDefaultTable, execTansposition, drawTranspositionTable } from '@/components/ui/ag-grid.js';
+import { uploadCSVstruct } from '@/types/structCSV.js';
 
-import { drawDefaultTable, execTansposition, drawTranspositionTable } from '../../../../components/ui/ag-grid.js';
-
-// /** @jsxImportSource @emotion/react */
-// import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+
+// 型定義
+/*******************************************************************************/
+interface ToggleButtonProps {
+  isActive: boolean;
+}
+
+// 転置後の行データの型定義
+interface TransposedRow {
+  field: string;
+  [key: string]: string | number | boolean; // 動的キーに対応
+}
+
+// 転置後の列定義の型定義
+interface ColumnDef {
+  headerName: string;
+  field: string;
+}
 
 // CSS
 /*******************************************************************************/
-const ToggleButton = styled.button`
+const ToggleButton = styled.button<ToggleButtonProps>`
   background-color: ${({ isActive }) => (isActive ? "#4caf50" : "#f44336")};
   color: white;
   border: none;
@@ -27,27 +42,8 @@ const ToggleButton = styled.button`
 `;
 
 
-// JS
+// スクリプト
 /*******************************************************************************/
-interface Training {
-  children: never[],
-  key: number,
-  items: any,
-  date: never,
-}
-
-// アップロードされるCSVの構造定義
-interface uploadCSVstruct {
-  ユーザー: string,
-  日付: string,
-  部位: string,
-  種目: string,
-  セット: string,
-  重量: string,
-  レップ数: string,
-  メモ: string,
-}
-
 const CsvUploader = () => {
   const [data, setData] = useState({});
   const [CSRFToken, setCSRFToken] = useState(''); // 全画面共通的に持たせる必要があるのでインポート式にしたい。
@@ -64,17 +60,19 @@ const CsvUploader = () => {
    * ファイルアップ後のイベント
    * @param event
    */
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
 
     if (file) {
       const reader = new FileReader();
 
       reader.onload = () => {
-        Papa.parse(reader.result, {
+        // reader.result は string | ArrayBuffer なので、型アサーションを使用
+        const csvText = reader.result as string;
+        Papa.parse<uploadCSVstruct>(csvText, {
           header: true, // ヘッダー行をパースする
           skipEmptyLines: true, // 空行をスキップする
-          complete: (result) => {
+          complete: (result: Papa.ParseResult<uploadCSVstruct>) => {
             // オブジェクトで保持されていそうなので日付ごとにグループ化してみる
             const groupToDate = Object.groupBy(result.data, (type: uploadCSVstruct) => type.日付);
             setData(groupToDate); // パースしたデータを状態に保存
@@ -82,26 +80,19 @@ const CsvUploader = () => {
             const result2 = [];
             for(const [dateKey, item] of Object.entries(groupToDate)) {
               const groupToDateAndMenu = Object.groupBy(item, (type: uploadCSVstruct) => type.種目);
-              const result = {};
+              const result: Record<string, uploadCSVstruct[]> = {};
+
               for(const [groupKey, groupItem] of Object.entries(groupToDateAndMenu)) {
                 const colName = `${dateKey}_${groupKey}`;
                 const afterRenameItem = { [colName]: groupItem };
                 Object.assign(result, afterRenameItem);
-              }
-              console.log(result);
-
-              for(const data of item) {
-                result2.push(data);
+                result2.push(groupItem);
               }
             }
-            console.log(result2);
             setRowData(result2);
-            // その結果をstateに更新する。
-            // 先頭データのkey値を使って列名を定義する。その結果をstateに更新する。
           },
         });
       };
-
       reader.readAsText(file);
     }
   };
@@ -129,7 +120,7 @@ const CsvUploader = () => {
     }
     catch (err) {
       console.error(err);
-      alert(err.message || "エラーが発生しました。");
+      alert(err instanceof Error ? err.message : '予期しないエラーが発生しました。');
     }
   }
 
@@ -158,14 +149,10 @@ const CsvUploader = () => {
   },[CSRFToken]); // 空配列を渡して無限ループを防ぐ
 
 
-  const [rowData, setRowData] = useState([
-    // { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-    // { make: "Ford", model: "F-Series", price: 33850, electric: false },
-    // { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-  ]);
+  const [rowData, setRowData] = useState([]);
 
   // Column Definitions: Defines the columns to be displayed.
-  const [colDefs, setColDefs] = useState([
+  const [colDefs] = useState([
     { field: "ユーザー" },
     { field: "部位" },
     { field: "種目" },
@@ -174,16 +161,23 @@ const CsvUploader = () => {
     { field: "レップ数" },
   ]);
 
-  const [transRowData, setTransRowData] = useState([]);
-  const [transColData, setTransColData] = useState([]);
+  const [transRowData, setTransRowData] = useState<TransposedRow[][]>([]);
+  const [transColData, setTransColData] = useState<ColumnDef[][]>([]);
 
   useEffect(() => {
     if (Object.keys(data).length > 0) {
       // データが存在する場合に処理を実行
-      const { transposedRows, transposedColumns } = execTansposition(rowData);
-      setTransRowData(transposedRows);
-      setTransColData(transposedColumns);
+      const transposedRowsList = [];
+      const transposedColumnsList = [];
+      for (const rowItem of rowData) {
+        const { transposedRows, transposedColumns } = execTansposition(rowItem);
+        transposedRowsList.push(transposedRows);
+        transposedColumnsList.push(transposedColumns);
+      }
+      setTransRowData(transposedRowsList);
+      setTransColData(transposedColumnsList);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]); // ファイルアップイベントが発火する度に実行される
 
   return (
@@ -216,13 +210,26 @@ const CsvUploader = () => {
           (() => {
             return (
               <>
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <div key={index}>
-                    {isActive
-                      ? drawDefaultTable(rowData, colDefs)
-                      : drawTranspositionTable(transRowData, transColData)}
-                  </div>
-                ))}
+                {isActive ? (
+                  rowData.map((rowItem, index) => (
+                    <div key={index}>
+                      {drawDefaultTable(rowItem, colDefs)}
+                    </div>
+                  ))
+                ) : (
+                  transRowData.map((transRowItem, index) => {
+                    // const transformedRows = transRowItem.map((item) => ({
+                    //   value1: item.field1,
+                    //   value2: item.field2,
+                    //   value3: "", // 必要に応じて設定
+                    //   value4: false, // 必要に応じて設定
+                    // }));
+
+                    <div key={index}>
+                      {drawTranspositionTable(transRowItem, transColData[index])}
+                    </div>
+                  })
+                )}
                 <div>JSONデータ表示</div>
                 <textarea
                   id='uploadDataJson'

@@ -1,34 +1,12 @@
 import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { uploadCSVstruct, uploadCSVTranspositionStruct } from '@/types/structCSV.js';
 
-// Register all Community features
-ModuleRegistry.registerModules([AllCommunityModule]);
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
 
-/**
- * デフォルトのテーブル描画
- * @param rowData
- * @param colDefs
- */
-function drawDefaultTable (rowData: Array<object>, colDefs: Array<object>) {
-  const rowHeight = 50;
-  const colWidth = 200;
-  const dynamicHeight = rowData.length > 0 ? rowData.length * rowHeight + 50 : 100;
-  const dynamicWidth = colDefs.length > 0 ? colDefs.length * colWidth : 500;
-  return (
-    <>
-      <div
-        // define a height because the Data Grid will fill the size of the parent container
-        style={{ height: dynamicHeight, width: dynamicWidth }}
-      >
-        <AgGridReact
-          rowData={rowData}
-          columnDefs={colDefs}
-        />
-      </div>
-    </>
-  );
-}
-
+// 型定義
+/*******************************************************************************/
 // 元データの型定義
 interface OriginalRow {
   make: string;
@@ -48,6 +26,46 @@ interface ColumnDef {
   headerName: string;
   field: string;
 }
+
+// CSS
+/*******************************************************************************/
+const defaultTable = css`
+  margin: 20px 0 50px 0;
+`
+
+// Register all Community features
+ModuleRegistry.registerModules([AllCommunityModule]);
+
+/**
+ * デフォルトのテーブル描画
+ * @param rowData
+ * @param colDefs
+ */
+function drawDefaultTable (rowData: Array<uploadCSVstruct>, colDefs: Array<object>) {
+  const rowHeight = 50;
+  const colWidth = 200;
+  const dynamicHeight = rowData.length > 0 ? rowData.length * rowHeight + 50 : 100;
+  const dynamicWidth = colDefs.length > 0 ? colDefs.length * colWidth : 500;
+
+  // タイトル用に日付と種目名を設定
+  const dispTitle = `${rowData[0].日付} ${rowData[0].種目}`;
+  return (
+    <>
+      <div
+        // define a height because the Data Grid will fill the size of the parent container
+        style={{ height: dynamicHeight, width: dynamicWidth }}
+        css={defaultTable}
+      >
+        {dispTitle}
+        <AgGridReact
+          rowData={rowData}
+          columnDefs={colDefs}
+        />
+      </div>
+    </>
+  );
+}
+
 /**
  * 行と列を転置したテーブル描画
  * @param rowData
@@ -68,9 +86,9 @@ const execTansposition = (data: OriginalRow[]): { transposedRows: TransposedRow[
 
   // 転置された列定義を作成
   const transposedColumns: ColumnDef[] = [
-    { headerName: 'Field', field: 'field' },
+    { headerName: '項目名', field: 'field' },
     ...data.map((_, index) => ({
-      headerName: `Row ${index + 1}`,
+      headerName: `${index + 1}セット目`,
       field: `value${index + 1}`,
     })),
   ];
@@ -83,18 +101,25 @@ const execTansposition = (data: OriginalRow[]): { transposedRows: TransposedRow[
  * @param rowData
  * @param colDefs
  */
-function drawTranspositionTable (rowData: Array<object>, colDefs: Array<object>) {
+function drawTranspositionTable (rowData: Array<uploadCSVTranspositionStruct>, colDefs: Array<object>) {
   const rowHeight = 50;
   const colWidth = 200;
   const dynamicHeight = rowData.length > 0 ? rowData.length * rowHeight + 50 : 100;
   const dynamicWidth = colDefs.length > 0 ? colDefs.length * colWidth : 500;
+
+  // タイトル用に日付と種目名を設定
+  const selectDispDate = rowData.find((row) => { return row.field === '日付' });
+  const selectDispMenu = rowData.find((row) => { return row.field === '種目' });
+  const dispTitle = `${selectDispDate?.value1 ?? ''} ${selectDispMenu?.value1 ?? ''}`;
 
   return (
     <>
       <div
         // define a height because the Data Grid will fill the size of the parent container
         style={{ height: dynamicHeight, width: dynamicWidth }}
+        css={defaultTable}
       >
+        {dispTitle}
         <AgGridReact
           rowData={rowData}
           columnDefs={colDefs}
@@ -108,4 +133,4 @@ export {
   drawDefaultTable,
   execTansposition,
   drawTranspositionTable,
-}
+};
