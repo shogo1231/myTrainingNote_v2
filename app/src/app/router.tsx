@@ -82,6 +82,13 @@ export const createAppRouter = () =>
             return { Component: CsvUploader };
           },
         },
+        {
+          path: 'workoutPlan',
+          lazy: async () => {
+            const { WorkoutPlan } = await import('./routes/app/workout/workoutPlan');
+            return { Component: WorkoutPlan };
+          },
+        },
         // ここでもnotFoundの定義をしておくか、共通的なエラーパスとするか・・・
       ],
     },

@@ -67,6 +67,33 @@ function drawDefaultTable (rowData: Array<uploadCSVstruct>, colDefs: Array<objec
 }
 
 /**
+ * デフォルトのテーブル描画(タイトルなし)
+ * @param rowData
+ * @param colDefs
+ */
+function drawDefaultTable_nonTitle (rowData: Array<uploadCSVstruct>, colDefs: Array<object>) {
+  const rowHeight = 50;
+  const colWidth = 200;
+  const dynamicHeight = rowData.length > 0 ? rowData.length * rowHeight + 50 : 100;
+  const dynamicWidth = colDefs.length > 0 ? colDefs.length * colWidth : 500;
+
+  return (
+    <>
+      <div
+        // define a height because the Data Grid will fill the size of the parent container
+        style={{ height: dynamicHeight, width: dynamicWidth }}
+        css={defaultTable}
+      >
+        <AgGridReact
+          rowData={rowData}
+          columnDefs={colDefs}
+        />
+      </div>
+    </>
+  );
+}
+
+/**
  * 行と列を転置したテーブル描画
  * @param rowData
  * @param colDefs
@@ -131,6 +158,7 @@ function drawTranspositionTable (rowData: Array<uploadCSVTranspositionStruct>, c
 
 export {
   drawDefaultTable,
+  drawDefaultTable_nonTitle,
   execTansposition,
   drawTranspositionTable,
 };
