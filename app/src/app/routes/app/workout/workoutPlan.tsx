@@ -1,5 +1,5 @@
 // import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { drawDefaultTable_nonTitle } from '@/components/ui/ag-grid.js';
 import { uploadCSVstruct } from '@/types/structCSV.js';
@@ -35,9 +35,10 @@ const WorkoutPlan = () => {
   const [workPlanData, setWorkPlanData] = useState({});
   const [CSRFToken, setCSRFToken] = useState(''); // 全画面共通的に持たせる必要があるのでインポート式にしたい。
   const [workPlanDate, setWorkPlanDate] = useState(null);
+  const workPlanDateRef = useRef(null); // 最新の日付を即時更新
 
   const getWorkoutPlanData = async () => {
-    const URL = `/workoutAPI/workout/getWorkoutPlanData?date=${workPlanDate}`;
+    const URL = `/workoutAPI/workout/getWorkoutPlanData?date=${workPlanDateRef.current}`;
 
     try {
       const response = await fetch(URL);
@@ -47,7 +48,6 @@ const WorkoutPlan = () => {
       const json = await response.json();
       console.log(json);
       setWorkPlanData(json);
-      // setWorkPlanData(response)
     }
     catch (err) {
       console.error(err);
@@ -79,6 +79,11 @@ const WorkoutPlan = () => {
     }
   },[CSRFToken]); // 空配列を渡して無限ループを防ぐ
 
+  const handleDateChange = (date) => {
+    setWorkPlanDate(date); // UI 更新
+    workPlanDateRef.current = date; // 最新の値を即時更新
+    getWorkoutPlanData(); // 最新の値を確実に渡す
+  };
 
   // Column Definitions: Defines the columns to be displayed.
   const [colDefs] = useState([
@@ -102,10 +107,7 @@ const WorkoutPlan = () => {
           selected={workPlanDate}
           dateFormat="yyyy/MM/dd"
           placeholderText="日付選択"
-          onChange={(date) => {
-            setWorkPlanDate(date);
-            getWorkoutPlanData()
-          }}
+          onChange={handleDateChange}
         />
         {workPlanDate && (
           (() => {
