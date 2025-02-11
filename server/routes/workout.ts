@@ -39,6 +39,17 @@ router.post('/registUploadCSVdata', ensureResponse(
 ));
 
 /********************************************************************************************************************/
+// トレーニング計画登録
+router.post('/workoutPlanRegist', ensureResponse(
+  async (req: any, res: any) => {
+    const postData = req.body;
+    await workoutPlan.workoutPlanRegist(postData);
+    res.status(200).send('OK');
+  },
+  errMessage.getData
+));
+
+/********************************************************************************************************************/
 // トレーニング計画取得
 router.get('/getWorkoutPlanData', ensureResponse(
   async (req: any, res: any) => {

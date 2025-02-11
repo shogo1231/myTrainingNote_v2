@@ -89,6 +89,13 @@ export const createAppRouter = () =>
             return { Component: WorkoutPlan };
           },
         },
+        {
+          path: 'workoutPlanRegist',
+          lazy: async () => {
+            const { WorkoutPlanRegist } = await import('./routes/app/workout/workoutPlanRegist');
+            return { Component: WorkoutPlanRegist };
+          },
+        },
         // ここでもnotFoundの定義をしておくか、共通的なエラーパスとするか・・・
       ],
     },
