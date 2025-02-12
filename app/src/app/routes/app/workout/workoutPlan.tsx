@@ -2,12 +2,13 @@
 import { useEffect, useState, useRef } from 'react';
 
 import { drawDefaultTable_nonTitle } from '@/components/ui/ag-grid.js';
-import { uploadCSVstruct } from '@/types/structCSV.js';
+// import { uploadCSVstruct } from '@/types/structCSV.js';
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 
 import styled from "@emotion/styled";
+import { uploadCSVstruct } from '@/types/structCSV';
 
 // 型定義
 /*******************************************************************************/
@@ -79,7 +80,7 @@ const WorkoutPlan = () => {
     }
   },[CSRFToken]); // 空配列を渡して無限ループを防ぐ
 
-  const handleDateChange = (date) => {
+  const handleDateChange = (date: any) => {
     setWorkPlanDate(date); // UI 更新
     workPlanDateRef.current = date; // 最新の値を即時更新
     getWorkoutPlanData(); // 最新の値を確実に渡す
@@ -117,7 +118,7 @@ const WorkoutPlan = () => {
                   Object.entries(workPlanData).map((rowItem, index) => (
                     <div key={index}>
                       <div>{rowItem[0]}</div>
-                      {drawDefaultTable_nonTitle(rowItem[1], colDefs)}
+                      {drawDefaultTable_nonTitle(rowItem[1] as uploadCSVstruct[], colDefs)}
                     </div>
                   ))
                 }

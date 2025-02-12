@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
+// import { useEffect, useRef } from 'react';
 
-/** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+// /** @jsxImportSource @emotion/react */
+// import { css } from "@emotion/react";
 
 function Footer() {
   return (

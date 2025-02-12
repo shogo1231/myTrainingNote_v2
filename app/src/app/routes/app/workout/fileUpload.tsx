@@ -79,17 +79,17 @@ const CsvUploader = () => {
             // グループ化されたデータをさらに種目でグループ化して配列に変換する。
             const result2 = [];
             for(const [dateKey, item] of Object.entries(groupToDate)) {
-              const groupToDateAndMenu = Object.groupBy(item, (type: uploadCSVstruct) => type.種目);
+              const groupToDateAndMenu = Object.groupBy(item || [], (type: uploadCSVstruct) => type.種目);
               const result: Record<string, uploadCSVstruct[]> = {};
 
               for(const [groupKey, groupItem] of Object.entries(groupToDateAndMenu)) {
                 const colName = `${dateKey}_${groupKey}`;
                 const afterRenameItem = { [colName]: groupItem };
                 Object.assign(result, afterRenameItem);
-                result2.push(groupItem);
+                result2.push(groupItem as never);
               }
             }
-            setRowData(result2);
+            setRowData(result2 as never);
           },
         });
       };
@@ -171,8 +171,8 @@ const CsvUploader = () => {
       const transposedColumnsList = [];
       for (const rowItem of rowData) {
         const { transposedRows, transposedColumns } = execTansposition(rowItem);
-        transposedRowsList.push(transposedRows);
-        transposedColumnsList.push(transposedColumns);
+        transposedRowsList.push(transposedRows as never);
+        transposedColumnsList.push(transposedColumns as never);
       }
       setTransRowData(transposedRowsList);
       setTransColData(transposedColumnsList);
@@ -219,7 +219,7 @@ const CsvUploader = () => {
                 ) : (
                   transRowData.map((transRowItem, index) => (
                     <div key={index}>
-                      {drawTranspositionTable(transRowItem, transColData[index])}
+                      {drawTranspositionTable(transRowItem as never[], transColData[index])}
                     </div>
                   ))
                 )}

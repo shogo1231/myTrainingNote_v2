@@ -43,7 +43,7 @@ const Basic = () => {
 
   const handleCopy = () => {
     if (contentRef.current) {
-      const textToCopy = contentRef.current.innerText;
+      const textToCopy = (contentRef.current as HTMLElement).innerText;
 
       navigator.clipboard.writeText(textToCopy)
         .then(() => {

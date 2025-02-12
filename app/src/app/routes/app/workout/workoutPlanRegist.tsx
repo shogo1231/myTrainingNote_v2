@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from 'react';
 
 import * as createPrompt from '@/features/workout/components/workoutPlanRegist.js';
-import { uploadCSVstruct } from '@/types/structCSV.js';
+// import { uploadCSVstruct } from '@/types/structCSV.js';
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -202,7 +202,7 @@ const WorkoutPlanRegist = () => {
             id='workoutPlanInputArea'
             rows={15}
             cols={50}
-            value={Object.keys(workPlanData).length > 0 ? workPlanData : ''}
+            value={Object.keys(workPlanData).length > 0 ? JSON.stringify(workPlanData, null, 2) : ''}
             onChange={handleChange}
             placeholder = 'chatGPTが生成したJSONデータを貼り付け（手動作成も可）'
           />

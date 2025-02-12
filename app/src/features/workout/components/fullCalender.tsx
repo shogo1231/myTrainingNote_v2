@@ -22,19 +22,29 @@ import interactionPlugin from "@fullcalendar/interaction";
 
 // JS
 /*******************************************************************************/
-
+// 型定義
+interface TrainingItemProps {
+  execute_date: string;
+  body_code: number;
+  event_code: number;
+  bodyParts_code: number;
+  trainingEvents_name: string;
+  totalSetCount: number;
+  totalWeight: number;
+  repetitionMaximum: number;
+}
 
 // Propsの型を定義
 type FullCalendarProps = {
-  onVisibilityChange: (newState: object) => void; // 関数の型
-  settrainingDatas: (newState: object) => void; // 関数の型
+  onVisibilityChange: (newState:  { dateStr: string }) => void; // 関数の型
+  settrainingDatas: (newState: TrainingItemProps[]) => void; // 関数の型
 };
 
 
 const FullCalender = ({ onVisibilityChange, settrainingDatas }: FullCalendarProps) => {
 
   // 引数infoはFullCalendarのdateClickInfoを参照しているのでanyにしておく
-  const handleDateClick = (info: any) => {
+  const handleDateClick = (info: { dateStr: string }) => {
     // 日付をクリックしたタイミングで日付と一致するトレーニング履歴データを取得しstateを更新しておく
     const URL = `/workoutAPI/workout/getTrainingLog?date=${info.dateStr}`;
     const fetchData = async () => {

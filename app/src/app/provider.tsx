@@ -5,9 +5,9 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { HelmetProvider } from 'react-helmet-async';
 
 import { MainErrorFallback } from '@/components/errors/main';
-import { Notifications } from '@/components/ui/notifications';
-import { AuthLoader } from '@/lib/auth';
-import { queryConfig } from '@/lib/react-query';
+import { Notifications } from '@/components/ui/notifications.js';
+import { AuthLoader } from '@/lib/auth.js';
+import { queryConfig } from '@/lib/react-query.js';
 
 type AppProviderProps = {
   children: React.ReactNode;

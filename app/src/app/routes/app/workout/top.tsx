@@ -1,5 +1,5 @@
 // import '../Top.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FullCalender from '@/features/workout/components/fullCalender';
 
@@ -8,22 +8,33 @@ import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import CircleIcon from '@mui/icons-material/Circle';
 
-/** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+// /** @jsxImportSource @emotion/react */
+// import { css } from "@emotion/react";
 
 // CSS
 /*******************************************************************************/
-const HighChartGanttArea = css`
-`
+// const HighChartGanttArea = css`
+// `
 
 
 // JS
 /*******************************************************************************/
+// 型定義
+interface TrainingItemProps {
+  execute_date: string;
+  body_code: number;
+  event_code: number;
+  bodyParts_code: number;
+  trainingEvents_name: string;
+  totalSetCount: number;
+  totalWeight: number;
+  repetitionMaximum: number;
+}
+
 interface Training {
-  children: never[],
-  key: number,
-  items: any,
-  date: never,
+  key: number;
+  items: TrainingItemProps;
+  date: string;
 }
 
 const TestItem = styled(Paper)(({ theme }) => ({
@@ -87,13 +98,13 @@ function selectBodyPartsIcon(bodyPartsCode: number) {
 
 export const App = () => {
 
-  const [isVisible, setIsVisible] = useState({});
+  const [isVisible, setIsVisible] = useState<{ dateStr?: string }>({});
   // 子コンポーネントからステートを更新する関数
-  const handleVisibilityChange = (newState) => {
+  const handleVisibilityChange = (newState: { dateStr: string}) => {
     setIsVisible(newState);
   };
-  const [trainingDatas, settrainingDatas] = useState([{}]);
-  const getTrainingDatas = (newState) => {
+  const [trainingDatas, settrainingDatas] = useState<TrainingItemProps[]>([]);
+  const getTrainingDatas = (newState: TrainingItemProps[]) => {
     settrainingDatas(newState);
   };
 
@@ -105,11 +116,11 @@ export const App = () => {
       {isVisible?.dateStr &&
         <>
           <h2>{isVisible.dateStr || ''}</h2>
-          {trainingDatas.map((trainingData: any, index: number) => {
+          {trainingDatas.map((trainingData: TrainingItemProps, index: number) => {
             return <TrainingItem
               key={index}
               items={trainingData}
-              date={isVisible.dateStr}
+              date={isVisible?.dateStr || ''}
             >
             </TrainingItem>;
           })}

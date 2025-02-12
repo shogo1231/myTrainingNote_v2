@@ -31,7 +31,6 @@
 // import { QueryClient, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import {
-  LoaderFunctionArgs,
   RouterProvider,
   createBrowserRouter,
 } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsGantt from 'highcharts/modules/gantt';
 import HighchartsReact from 'highcharts-react-official';
@@ -6,11 +6,6 @@ import HighchartsReact from 'highcharts-react-official';
 // Emotion
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-
-interface Obj {
-  [prop: string]: any // 『[prop: string]: any』を記述してあげることでどんなプロパティも持てるようになります。
-  [prop: number]: any // 『[prop: string]: any』を記述してあげることでどんなプロパティも持てるようになります。
-}
 
 // CSS
 /*******************************************************************************/
@@ -232,7 +227,7 @@ const GanttChart = () => {
     };
 
     // オプションを設定
-    setOptions(chartOptions);
+    setOptions(chartOptions as never);
   }, []);
 
   return options ? (
