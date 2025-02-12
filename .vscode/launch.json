@@ -16,10 +16,10 @@
       "type": "node",
       "request": "launch",
       "name": "server",
-      "program": "${workspaceFolder}/server/build/js/server/index.js", // デバッガ起動時に実行する実行ファイル名 メインの JavaScript ファイル
+      "program": "${workspaceFolder}/server/dist/server/index.js", // デバッガ起動時に実行する実行ファイル名 メインの JavaScript ファイル
       "preLaunchTask": "Compile TypeScript",
       "cwd": "${workspaceFolder}/server",
-      "outFiles": ["${workspaceFolder}/server/build/js/**/*.js"], // 出力ファイルのパス
+      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"], // 出力ファイルのパス
       "skipFiles": ["<node_internals>/**"],
       "console": "integratedTerminal", // ターミナルを統合ターミナルに設定
       "sourceMaps": true, // ソースマップを有効にする
